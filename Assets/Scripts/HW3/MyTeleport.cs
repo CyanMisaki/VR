@@ -1,0 +1,36 @@
+﻿using System.Collections;
+using HTC.UnityPlugin.Vive;
+using UnityEngine;
+using UnityEngine.EventSystems;
+
+namespace HW3
+{
+    public class MyTeleport : Teleportable
+    {
+        [SerializeField] private float Speed;
+        [SerializeField] private float CoolDown;
+
+        public override IEnumerator StartTeleport(RaycastResult hitResult, Vector3 position, Quaternion rotation,
+            float delay)
+        {
+            while (true)
+            {
+               target.position=Vector3.MoveTowards(target.position,position,Speed*Time.deltaTime);
+
+                var v = position;
+                v.y = target.position.y;
+
+                if (Vector3.Distance(target.position, v) < 0.1f)
+                {
+                    yield return new WaitForSeconds(CoolDown);
+                    teleportCoroutine = null;
+                    yield break;
+                }
+                
+                yield return new WaitForFixedUpdate();
+            }
+
+        
+        }
+    }
+}
